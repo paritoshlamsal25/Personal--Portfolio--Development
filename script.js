@@ -494,54 +494,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 800); // Reduced from 1500ms to 800ms
 });
 
-// Add custom cursor for desktop
-if (window.innerWidth > 768) {
-    const cursor = document.createElement('div');
-    cursor.className = 'custom-cursor';
-    document.body.appendChild(cursor);
-    
-    const cursorStyles = document.createElement('style');
-    cursorStyles.textContent = `
-        .custom-cursor {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #2563eb;
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9999;
-            transition: all 0.1s ease;
-            mix-blend-mode: difference;
-        }
-        
-        body {
-            cursor: none;
-        }
-        
-        a, button, .btn {
-            cursor: none;
-        }
-        
-        .custom-cursor.hover {
-            width: 40px;
-            height: 40px;
-            background: rgba(37, 99, 235, 0.2);
-        }
-    `;
-    
-    document.head.appendChild(cursorStyles);
-    
-    document.addEventListener('mousemove', (e) => {
-        cursor.style.left = e.clientX - 10 + 'px';
-        cursor.style.top = e.clientY - 10 + 'px';
-    });
-    
-    document.querySelectorAll('a, button, .btn').forEach(el => {
-        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
-}
-
 // Easter egg - Konami code
 let konamiCode = [];
 const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // Up Up Down Down Left Right Left Right B A
