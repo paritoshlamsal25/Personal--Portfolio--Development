@@ -1,6 +1,7 @@
 // DOM Elements
 const hamburger = document.getElementById('hamburger');
 const navMenu = document.getElementById('nav-menu');
+const navOverlay = document.getElementById('nav-overlay');
 const navLinks = document.querySelectorAll('.nav-link');
 const contactForm = document.getElementById('contactForm');
 const backToTopBtn = document.getElementById('backToTop');
@@ -23,23 +24,56 @@ backToTopBtn.addEventListener('click', () => {
 
 // Mobile Navigation Toggle
 hamburger.addEventListener('click', () => {
-    navMenu.classList.toggle('active');
-    hamburger.classList.toggle('active');
+    const isActive = navMenu.classList.contains('active');
+    
+    if (isActive) {
+        closeMenu();
+    } else {
+        openMenu();
+    }
 });
+
+// Open mobile menu
+function openMenu() {
+    navMenu.classList.add('active');
+    hamburger.classList.add('active');
+    if (navOverlay) navOverlay.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+}
+
+// Close mobile menu
+function closeMenu() {
+    navMenu.classList.remove('active');
+    hamburger.classList.remove('active');
+    if (navOverlay) navOverlay.classList.remove('active');
+    document.body.style.overflow = ''; // Restore scrolling
+}
 
 // Close mobile menu when clicking on nav links
 navLinks.forEach(link => {
     link.addEventListener('click', () => {
-        navMenu.classList.remove('active');
-        hamburger.classList.remove('active');
+        closeMenu();
     });
 });
+
+// Close mobile menu when clicking on overlay
+if (navOverlay) {
+    navOverlay.addEventListener('click', () => {
+        closeMenu();
+    });
+}
 
 // Close mobile menu when clicking outside
 document.addEventListener('click', (e) => {
     if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
-        navMenu.classList.remove('active');
-        hamburger.classList.remove('active');
+        closeMenu();
+    }
+});
+
+// Close menu on escape key
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeMenu();
     }
 });
 
