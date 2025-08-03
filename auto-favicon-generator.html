@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto Favicon Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; text-align: center; }
+        canvas { border: 2px solid #ccc; margin: 10px; }
+        .status { padding: 10px; margin: 10px; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        button { padding: 10px 20px; font-size: 16px; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>🎯 Auto Favicon Generator</h1>
+    <p>This will automatically create circular favicons from your photo</p>
+    
+    <div id="status"></div>
+    <div id="canvases"></div>
+    <button onclick="generateAndDownloadAll()" id="generateBtn">Generate & Download All Favicons</button>
+
+    <script>
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            status.innerHTML = message;
+            status.className = `status ${type}`;
+        }
+
+        function createCanvas(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            canvas.style.display = 'inline-block';
+            canvas.style.margin = '5px';
+            const label = document.createElement('div');
+            label.textContent = `${size}x${size}`;
+            label.style.fontSize = '12px';
+            const container = document.createElement('div');
+            container.style.display = 'inline-block';
+            container.style.margin = '10px';
+            container.appendChild(canvas);
+            container.appendChild(label);
+            document.getElementById('canvases').appendChild(container);
+            return canvas;
+        }
+
+        function generateCircularFavicon(canvas, callback) {
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            const size = canvas.width;
+            
+            img.onload = function() {
+                // Clear canvas
+                ctx.clearRect(0, 0, size, size);
+                
+                // Create circular clipping path
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, size/2, 0, 2 * Math.PI);
+                ctx.clip();
+                
+                // Calculate square crop from center of image
+                const minDimension = Math.min(img.width, img.height);
+                const offsetX = (img.width - minDimension) / 2;
+                const offsetY = (img.height - minDimension) / 2;
+                
+                // Draw image to fill entire circle
+                ctx.drawImage(img, offsetX, offsetY, minDimension, minDimension, 0, 0, size, size);
+                ctx.restore();
+                
+                // Add subtle border
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, size/2 - 1, 0, 2 * Math.PI);
+                ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                if (callback) callback();
+            };
+            
+            img.onerror = function() {
+                showStatus('❌ Error: Could not load myphoto.jpg from images folder', 'error');
+            };
+            
+            img.crossOrigin = 'anonymous';
+            img.src = 'images/myphoto.jpg?' + Date.now();
+        }
+
+        function downloadCanvas(canvas, filename) {
+            canvas.toBlob(function(blob) {
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 'image/png');
+        }
+
+        function generateAndDownloadAll() {
+            showStatus('🔄 Generating circular favicons...', 'info');
+            
+            const sizes = [
+                {size: 16, name: 'favicon-16x16.png'},
+                {size: 32, name: 'favicon-32x32.png'},
+                {size: 48, name: 'favicon-48x48.png'},
+                {size: 180, name: 'apple-touch-icon.png'},
+                {size: 192, name: 'android-chrome-192x192.png'},
+                {size: 512, name: 'android-chrome-512x512.png'}
+            ];
+
+            // Clear previous canvases
+            document.getElementById('canvases').innerHTML = '';
+            
+            let completed = 0;
+            
+            sizes.forEach((favicon, index) => {
+                const canvas = createCanvas(favicon.size);
+                
+                generateCircularFavicon(canvas, function() {
+                    completed++;
+                    
+                    // Auto-download after a short delay
+                    setTimeout(() => {
+                        downloadCanvas(canvas, favicon.name);
+                    }, index * 300);
+                    
+                    if (completed === sizes.length) {
+                        showStatus('🎉 All favicons generated and downloaded! Move them to your project root folder.', 'success');
+                        document.getElementById('generateBtn').textContent = 'Generate Again';
+                    }
+                });
+            });
+        }
+
+        // Auto-generate on page load
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                showStatus('👋 Ready to generate your circular favicons!', 'info');
+            }, 500);
+        });
+    </script>
+</body>
+</html>
