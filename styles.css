@@ -4,6 +4,11 @@
     box-sizing: border-box;
 }
 
+/* Favicon styling - for browsers that support it */
+link[rel="icon"] {
+    border-radius: 50%;
+}
+
 html {
     scroll-behavior: smooth;
 }

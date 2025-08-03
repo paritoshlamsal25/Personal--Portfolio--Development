@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Circular Favicon - Paritosh Lamsal</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            padding: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #f4f4f4 0%, #ffffff 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2rem;
+        }
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        canvas {
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            margin: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .controls {
+            margin: 30px 0;
+        }
+        button {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,123,255,0.4);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            box-shadow: 0 4px 15px rgba(40,167,69,0.3);
+        }
+        .success:hover {
+            box-shadow: 0 8px 25px rgba(40,167,69,0.4);
+        }
+        .preview {
+            margin: 20px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+        .favicon-preview {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🖼️ Circular Favicon Generator</h1>
+        <p>This tool will create a beautiful circular favicon from your photo (myphoto.jpg)</p>
+        
+        <div class="preview">
+            <h3>Preview (64x64):</h3>
+            <canvas id="canvas" width="64" height="64"></canvas>
+        </div>
+        
+        <div class="controls">
+            <button onclick="generateFavicon()" id="generateBtn">✨ Generate Circular Favicon</button>
+            <button onclick="downloadAllSizes()" id="downloadBtn" style="display:none;" class="success">📥 Download All Sizes</button>
+        </div>
+        
+        <div id="status"></div>
+        
+        <div id="faviconPreviews" class="preview" style="display:none;">
+            <h3>Generated Favicons:</h3>
+            <p>Different sizes for various devices and browsers</p>
+        </div>
+    </div>
+
+    <script>
+        let faviconGenerated = false;
+        
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            status.innerHTML = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+        
+        function generateFavicon() {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            
+            showStatus('🔄 Loading your photo...', 'info');
+            
+            img.onload = function() {
+                // Clear canvas with white background
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, 64, 64);
+                
+                // Create circular clipping path
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(32, 32, 30, 0, 2 * Math.PI);
+                ctx.clip();
+                
+                // Calculate best fit for the image
+                const size = Math.min(img.width, img.height);
+                const offsetX = (img.width - size) / 2;
+                const offsetY = (img.height - size) / 2;
+                
+                // Draw image to fit the circle perfectly
+                ctx.drawImage(img, offsetX, offsetY, size, size, 2, 2, 60, 60);
+                ctx.restore();
+                
+                // Add a professional border
+                ctx.beginPath();
+                ctx.arc(32, 32, 30, 0, 2 * Math.PI);
+                ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Add subtle inner shadow effect
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(32, 32, 28, 0, 2 * Math.PI);
+                ctx.clip();
+                const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 28);
+                gradient.addColorStop(0, 'rgba(0,0,0,0)');
+                gradient.addColorStop(1, 'rgba(0,0,0,0.1)');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, 64, 64);
+                ctx.restore();
+                
+                faviconGenerated = true;
+                document.getElementById('generateBtn').style.display = 'none';
+                document.getElementById('downloadBtn').style.display = 'inline-block';
+                
+                showStatus('✅ Favicon generated successfully! Ready to download.', 'success');
+            };
+            
+            img.onerror = function() {
+                showStatus('❌ Error: Could not load myphoto.jpg. Make sure the file exists in the images folder.', 'error');
+            };
+            
+            // Load your photo
+            img.src = 'images/myphoto.jpg?' + new Date().getTime(); // Cache buster
+        }
+        
+        function createFaviconSize(size, filename) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                
+                img.onload = function() {
+                    // White background
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, size, size);
+                    
+                    // Create circular clipping path
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(size/2, size/2, (size/2) - 2, 0, 2 * Math.PI);
+                    ctx.clip();
+                    
+                    // Calculate best fit
+                    const imgSize = Math.min(img.width, img.height);
+                    const offsetX = (img.width - imgSize) / 2;
+                    const offsetY = (img.height - imgSize) / 2;
+                    
+                    // Draw image
+                    ctx.drawImage(img, offsetX, offsetY, imgSize, imgSize, 2, 2, size-4, size-4);
+                    ctx.restore();
+                    
+                    // Add border
+                    ctx.beginPath();
+                    ctx.arc(size/2, size/2, (size/2) - 2, 0, 2 * Math.PI);
+                    ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+                    ctx.lineWidth = Math.max(1, size/32);
+                    ctx.stroke();
+                    
+                    // Create download
+                    canvas.toBlob(function(blob) {
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                        resolve();
+                    }, 'image/png');
+                };
+                
+                img.src = 'images/myphoto.jpg?' + new Date().getTime();
+            });
+        }
+        
+        async function downloadAllSizes() {
+            if (!faviconGenerated) {
+                showStatus('❌ Please generate the favicon first!', 'error');
+                return;
+            }
+            
+            showStatus('📦 Creating multiple favicon sizes...', 'info');
+            
+            const sizes = [
+                {size: 16, name: 'favicon-16x16.png'},
+                {size: 32, name: 'favicon-32x32.png'},
+                {size: 48, name: 'favicon-48x48.png'},
+                {size: 64, name: 'favicon-64x64.png'},
+                {size: 128, name: 'favicon-128x128.png'},
+                {size: 180, name: 'apple-touch-icon.png'},
+                {size: 192, name: 'android-chrome-192x192.png'},
+                {size: 512, name: 'android-chrome-512x512.png'}
+            ];
+            
+            for (let i = 0; i < sizes.length; i++) {
+                await createFaviconSize(sizes[i].size, sizes[i].name);
+                showStatus(`📥 Downloaded ${sizes[i].name} (${i + 1}/${sizes.length})`, 'success');
+            }
+            
+            showStatus('🎉 All favicon sizes downloaded! Copy them to your images folder and refresh your website.', 'success');
+        }
+        
+        // Auto-generate on page load
+        window.onload = function() {
+            setTimeout(() => {
+                showStatus('👋 Ready to create your circular favicon!', 'info');
+            }, 500);
+        };
+    </script>
+</body>
+</html>

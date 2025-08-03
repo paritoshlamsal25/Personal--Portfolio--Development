@@ -1,0 +1,19 @@
+{
+    "name": "Paritosh Lamsal Portfolio",
+    "short_name": "Paritosh Lamsal",
+    "icons": [
+        {
+            "src": "images/myphoto.jpg",
+            "sizes": "192x192",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "images/myphoto.jpg",
+            "sizes": "512x512",
+            "type": "image/jpeg"
+        }
+    ],
+    "theme_color": "#000000",
+    "background_color": "#ffffff",
+    "display": "standalone"
+}
