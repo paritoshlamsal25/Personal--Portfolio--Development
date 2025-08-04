@@ -13,6 +13,10 @@ Allow: /styles.css
 Allow: /script.js
 Allow: /*.png
 Allow: /*.jpg
+Allow: /*.ico
+Allow: /favicon.ico
+Allow: /favicon-*.png
+Allow: /apple-touch-icon.png
 Allow: /*.webmanifest
 
 # Disallow development files

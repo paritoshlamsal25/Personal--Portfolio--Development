@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favicon Generator - Fix for Paritosh Portfolio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .step {
+            margin: 20px 0;
+            padding: 15px;
+            background: #e8f4fd;
+            border-left: 4px solid #2196f3;
+            border-radius: 5px;
+        }
+        .download-link {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 5px;
+        }
+        .download-link:hover {
+            background: #45a049;
+        }
+        canvas {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin: 10px;
+        }
+        .preview {
+            text-align: center;
+            margin: 20px 0;
+        }
+        #upload {
+            margin: 20px 0;
+            padding: 10px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .error {
+            color: #f44336;
+            background: #ffebee;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .success {
+            color: #4CAF50;
+            background: #e8f5e9;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Favicon Generator for Paritosh Portfolio</h1>
+        
+        <div class="step">
+            <h3>📸 Step 1: Upload Your Photo</h3>
+            <div id="upload">
+                <input type="file" id="imageInput" accept="image/*">
+                <p>Select your photo (myphoto.jpg)</p>
+            </div>
+        </div>
+
+        <div class="preview" id="previewSection" style="display: none;">
+            <h3>🖼️ Preview</h3>
+            <canvas id="canvas16" width="16" height="16"></canvas>
+            <canvas id="canvas32" width="32" height="32"></canvas>
+            <canvas id="canvas64" width="64" height="64"></canvas>
+            <canvas id="canvas180" width="180" height="180"></canvas>
+            <p>16x16, 32x32, 64x64, 180x180 (Apple Touch)</p>
+        </div>
+
+        <div class="step" id="downloadSection" style="display: none;">
+            <h3>💾 Step 2: Download Generated Files</h3>
+            <a href="#" id="downloadIco" class="download-link">📁 Download favicon.ico</a>
+            <a href="#" id="downloadPng16" class="download-link">📁 Download favicon-16x16.png</a>
+            <a href="#" id="downloadPng32" class="download-link">📁 Download favicon-32x32.png</a>
+            <a href="#" id="downloadApple" class="download-link">📁 Download apple-touch-icon.png</a>
+        </div>
+
+        <div class="step">
+            <h3>🔧 Step 3: Manual Instructions</h3>
+            <p><strong>Copy these files to your project root:</strong></p>
+            <ul>
+                <li><code>favicon.ico</code> - Main favicon file</li>
+                <li><code>favicon-16x16.png</code> - 16x16 PNG</li>
+                <li><code>favicon-32x32.png</code> - 32x32 PNG</li>
+                <li><code>apple-touch-icon.png</code> - Apple devices</li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3>📋 Step 4: HTML Code to Use</h3>
+            <pre id="htmlCode" style="background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto;">
+&lt;!-- Favicon Links --&gt;
+&lt;link rel="icon" type="image/x-icon" href="/favicon.ico"&gt;
+&lt;link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"&gt;
+&lt;link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"&gt;
+&lt;link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"&gt;
+&lt;link rel="manifest" href="/site.webmanifest"&gt;
+            </pre>
+        </div>
+
+        <div class="step">
+            <h3>⚡ Quick Fix Option</h3>
+            <p>If you want a temporary fix, you can use these online tools:</p>
+            <a href="https://favicon.io/favicon-generator/" target="_blank" class="download-link">🌐 Favicon.io Generator</a>
+            <a href="https://realfavicongenerator.net/" target="_blank" class="download-link">🌐 RealFaviconGenerator</a>
+        </div>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const imageInput = document.getElementById('imageInput');
+        const previewSection = document.getElementById('previewSection');
+        const downloadSection = document.getElementById('downloadSection');
+        const status = document.getElementById('status');
+
+        imageInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                processImage(file);
+            }
+        });
+
+        function processImage(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    generateFavicons(img);
+                    previewSection.style.display = 'block';
+                    downloadSection.style.display = 'block';
+                    status.innerHTML = '<div class="success">✅ Favicons generated successfully!</div>';
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function generateFavicons(img) {
+            const sizes = [
+                { size: 16, id: 'canvas16' },
+                { size: 32, id: 'canvas32' },
+                { size: 64, id: 'canvas64' },
+                { size: 180, id: 'canvas180' }
+            ];
+
+            sizes.forEach(({ size, id }) => {
+                const canvas = document.getElementById(id);
+                const ctx = canvas.getContext('2d');
+                
+                // Make it circular
+                ctx.clearRect(0, 0, size, size);
+                ctx.beginPath();
+                ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
+                ctx.closePath();
+                ctx.clip();
+                
+                // Draw image
+                ctx.drawImage(img, 0, 0, size, size);
+                
+                // Set download link
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    if (size === 16) {
+                        document.getElementById('downloadPng16').href = url;
+                        document.getElementById('downloadPng16').download = 'favicon-16x16.png';
+                    } else if (size === 32) {
+                        document.getElementById('downloadPng32').href = url;
+                        document.getElementById('downloadPng32').download = 'favicon-32x32.png';
+                        // Also use 32x32 for ICO
+                        document.getElementById('downloadIco').href = url;
+                        document.getElementById('downloadIco').download = 'favicon.ico';
+                    } else if (size === 180) {
+                        document.getElementById('downloadApple').href = url;
+                        document.getElementById('downloadApple').download = 'apple-touch-icon.png';
+                    }
+                });
+            });
+        }
+
+        // Auto-load the existing photo if possible
+        window.addEventListener('load', function() {
+            // You can manually select the myphoto.jpg file from images folder
+            status.innerHTML = '<div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px;">📸 Please select your myphoto.jpg file from the images folder to generate proper favicons.</div>';
+        });
+    </script>
+</body>
+</html>
