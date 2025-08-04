@@ -1,11 +1,11 @@
 # Robots.txt for Paritosh Lamsal Portfolio
-# https://paritoshlamsal25.github.io/Personal--Portfolio--Development/
+# https://paritosh.com.np/
 
 User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://paritoshlamsal25.github.io/Personal--Portfolio--Development/sitemap.xml
+Sitemap: https://paritosh.com.np/sitemap.xml
 
 # Allow specific files
 Allow: /images/
