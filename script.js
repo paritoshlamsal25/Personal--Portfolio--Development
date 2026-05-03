@@ -660,7 +660,7 @@ document.querySelectorAll('.project-card').forEach(card => {
 });
 
 // Counter animation for stats
-function animateCounter(element, target, duration = 2000) {
+function animateCounter(element, target, duration = 2000, finalText = String(target)) {
     let start = 0;
     const increment = target / (duration / 16);
     
@@ -670,7 +670,7 @@ function animateCounter(element, target, duration = 2000) {
             element.textContent = Math.ceil(start);
             requestAnimationFrame(updateCounter);
         } else {
-            element.textContent = target;
+            element.textContent = finalText;
         }
     }
     
@@ -683,12 +683,13 @@ const statsObserver = new IntersectionObserver((entries) => {
         if (entry.isIntersecting) {
             const statItems = entry.target.querySelectorAll('.stat-item h3');
             statItems.forEach(item => {
-                const text = item.textContent;
-                const number = parseInt(text.replace(/\D/g, ''));
-                if (number) {
+                const text = item.textContent.trim();
+                const digits = text.replace(/\D/g, '');
+                const number = digits ? parseInt(digits, 10) : NaN;
+                if (!Number.isNaN(number) && number > 0) {
                     item.textContent = '0';
                     setTimeout(() => {
-                        animateCounter(item, number);
+                        animateCounter(item, number, 2000, text);
                     }, 500);
                 }
             });
@@ -701,171 +702,6 @@ const statsSection = document.querySelector('.about-stats');
 if (statsSection) {
     statsObserver.observe(statsSection);
 }
-
-// Add loading screen with creative messaging
-document.addEventListener('DOMContentLoaded', () => {
-    // Create and show loader only after DOM is ready
-    const loader = document.createElement('div');
-    loader.id = 'loader';
-    
-    // Array of creative loading messages
-    const loadingMessages = [
-        "Crafting digital experiences...",
-        "Brewing some awesome code ☕",
-        "Preparing something amazing...",
-        "Initializing creativity mode...",
-        "Loading pixels with passion...",
-        "Compiling dreams into reality...",
-        "Building bridges to the future...",
-        "Mixing code with creativity...",
-        "Powering up the magic ✨"
-    ];
-    
-    // Select a random message
-    const randomMessage = loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
-    
-    loader.innerHTML = `
-        <div class="loader-content">
-            <div class="spinner"></div>
-            <p class="loading-text">${randomMessage}</p>
-            <div class="loading-dots">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
-    `;
-    
-    const loaderStyles = document.createElement('style');
-    loaderStyles.textContent = `
-        #loader {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(135deg, 
-                    #000000 0%,     /* Pure black */
-                    #1a1a1a 25%,    /* Dark charcoal */
-                    #2d2d2d 50%,    /* Medium charcoal */
-                    #1a1a1a 75%,    /* Dark charcoal */
-                    #000000 100%    /* Pure black */
-                );
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10000;
-            transition: opacity 0.5s ease;
-        }
-        
-        .loader-content {
-            text-align: center;
-            color: white;
-            animation: fadeInUp 0.8s ease;
-        }
-        
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid #ffffff;
-            border-right: 4px solid #ffffff;
-            border-radius: 50%;
-            animation: spin 1.5s linear infinite;
-            margin: 0 auto 30px;
-        }
-        
-        .loading-text {
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: #ffffff;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-            animation: textGlow 2s ease-in-out infinite alternate;
-        }
-        
-        .loading-dots {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .loading-dots span {
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            animation: dotBounce 1.4s infinite ease-in-out both;
-        }
-        
-        .loading-dots span:nth-child(1) { animation-delay: -0.32s; }
-        .loading-dots span:nth-child(2) { animation-delay: -0.16s; }
-        .loading-dots span:nth-child(3) { animation-delay: 0s; }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        @keyframes textGlow {
-            from {
-                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 204, 0, 0.3);
-            }
-            to {
-                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 204, 0, 0.6);
-            }
-        }
-        
-        @keyframes dotBounce {
-            0%, 80%, 100% {
-                transform: scale(0);
-                opacity: 0.5;
-            }
-            40% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-        
-        /* Mobile responsive */
-        @media (max-width: 768px) {
-            .loading-text {
-                font-size: 1.1rem;
-            }
-            
-            .spinner {
-                width: 50px;
-                height: 50px;
-                border-width: 3px;
-            }
-        }
-    `;
-    
-    document.head.appendChild(loaderStyles);
-    document.body.appendChild(loader);
-    
-    // Remove loader after a reasonable time
-    setTimeout(() => {
-        loader.style.opacity = '0';
-        setTimeout(() => {
-            if (document.body.contains(loader)) {
-                document.body.removeChild(loader);
-            }
-        }, 500);
-    }, 1200); // Shows for 1.2 seconds + 0.5s fade out
-});
 
 // Easter egg - Konami code
 let konamiCode = [];

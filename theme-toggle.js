@@ -6,9 +6,15 @@ class ThemeManager {
     }
 
     init() {
-        // Load saved theme or default to light mode
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        this.setTheme(savedTheme);
+        // Always default to light mode if no theme is saved
+        const savedTheme = localStorage.getItem('theme');
+        if (!savedTheme) {
+            // First time visitor - set to light mode
+            this.setTheme('light');
+        } else {
+            // Use saved theme
+            this.setTheme(savedTheme);
+        }
         
         // Add event listener for theme toggle
         if (this.themeToggle) {
