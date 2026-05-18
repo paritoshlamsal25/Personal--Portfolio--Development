@@ -472,8 +472,9 @@ img {
 }
 
 .btn-secondary:hover {
-    background: var(--hero-text);
-    color: var(--bg-primary);
+    background: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
 }
 
 .hero-image {
