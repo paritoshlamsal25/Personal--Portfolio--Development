@@ -604,6 +604,10 @@ section {
     line-height: 1.8;
 }
 
+.about-actions {
+    margin-top: 10px;
+}
+
 .about-stats {
     display: flex;
     justify-content: center;
