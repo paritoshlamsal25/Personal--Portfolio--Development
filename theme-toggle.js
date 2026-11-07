@@ -6,13 +6,11 @@ class ThemeManager {
     }
 
     init() {
-        // Always default to light mode if no theme is saved
+        // Default to dark mode for modern developer vibe unless user saved a preference
         const savedTheme = localStorage.getItem('theme');
         if (!savedTheme) {
-            // First time visitor - set to light mode
-            this.setTheme('light');
+            this.setTheme('dark');
         } else {
-            // Use saved theme
             this.setTheme(savedTheme);
         }
         
@@ -21,7 +19,6 @@ class ThemeManager {
             this.themeToggle.addEventListener('click', () => this.toggleTheme());
         }
         
-        // Update theme toggle button on load
         this.updateToggleButton();
     }
 
@@ -30,7 +27,7 @@ class ThemeManager {
         localStorage.setItem('theme', theme);
         this.updateToggleButton();
         
-        // Add smooth transition animation
+        // Smooth transition
         document.body.style.transition = 'background-color 0.4s ease, color 0.4s ease';
         setTimeout(() => {
             document.body.style.transition = '';
@@ -38,50 +35,29 @@ class ThemeManager {
     }
 
     toggleTheme() {
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
         this.setTheme(newTheme);
-        
-        // Add a small animation feedback
         this.animateToggle();
     }
 
     updateToggleButton() {
         if (!this.themeToggle) return;
-        
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-        const sunIcon = this.themeToggle.querySelector('.fa-sun');
-        const moonIcon = this.themeToggle.querySelector('.fa-moon');
-        
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
         if (currentTheme === 'dark') {
             this.themeToggle.setAttribute('aria-label', 'Switch to light mode');
-            if (sunIcon) {
-                sunIcon.style.opacity = '0';
-                sunIcon.style.transform = 'rotate(180deg)';
-            }
-            if (moonIcon) {
-                moonIcon.style.opacity = '1';
-                moonIcon.style.transform = 'rotate(0deg)';
-            }
+            this.themeToggle.setAttribute('title', 'Switch to light mode');
         } else {
             this.themeToggle.setAttribute('aria-label', 'Switch to dark mode');
-            if (sunIcon) {
-                sunIcon.style.opacity = '1';
-                sunIcon.style.transform = 'rotate(0deg)';
-            }
-            if (moonIcon) {
-                moonIcon.style.opacity = '0';
-                moonIcon.style.transform = 'rotate(-180deg)';
-            }
+            this.themeToggle.setAttribute('title', 'Switch to dark mode');
         }
     }
 
     animateToggle() {
         if (!this.themeToggle) return;
-        
-        this.themeToggle.style.transform = 'scale(0.9)';
+        this.themeToggle.style.transform = 'scale(0.88)';
         setTimeout(() => {
-            this.themeToggle.style.transform = 'scale(1)';
+            this.themeToggle.style.transform = '';
         }, 150);
     }
 }
@@ -91,11 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
     new ThemeManager();
 });
 
-// Handle system theme preference changes
+// Handle system theme preference changes if user hasn't explicitly chosen
 if (window.matchMedia) {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     mediaQuery.addEventListener('change', (e) => {
-        // Only auto-switch if no user preference is saved
         if (!localStorage.getItem('theme')) {
             const theme = e.matches ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', theme);

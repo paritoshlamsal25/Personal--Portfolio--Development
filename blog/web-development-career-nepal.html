@@ -6,75 +6,151 @@
     <title>Web Development Career Guide Nepal | Paritosh Lamsal Blog</title>
     <meta name="description" content="Complete guide to starting a web development career in Nepal. Learn JavaScript, React, Node.js and get freelance projects. Tips from experienced Nepal developer.">
     <meta name="keywords" content="web development career Nepal, learn programming Nepal, React developer Nepal, freelance developer Nepal, programming jobs Nepal">
-    <link rel="canonical" href="https://paritoshlamsal25.github.io/Personal--Portfolio--Development/blog/web-development-career-nepal.html">
+    <link rel="canonical" href="https://paritosh.com.np/blog/web-development-career-nepal.html">
     <link rel="stylesheet" href="../styles.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     
     <!-- Open Graph -->
     <meta property="og:title" content="Complete Web Development Career Guide for Nepal 2025">
     <meta property="og:description" content="Learn how to start and grow your web development career in Nepal. From learning basics to getting high-paying freelance projects.">
     <meta property="og:image" content="../images/myphoto.jpg">
-    <meta property="og:url" content="https://paritoshlamsal25.github.io/Personal--Portfolio--Development/blog/web-development-career-nepal.html">
+    <meta property="og:url" content="https://paritosh.com.np/blog/web-development-career-nepal.html">
     
     <style>
         .blog-container {
-            max-width: 800px;
-            margin: 100px auto 50px;
-            padding: 0 20px;
-            line-height: 1.7;
+            max-width: 840px;
+            margin: 120px auto 60px;
+            padding: 0 24px;
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
         }
         .blog-header {
             text-align: center;
             margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid var(--border-subtle);
         }
         .blog-title {
-            font-size: 2.5rem;
-            color: #333;
+            font-family: var(--font-heading);
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.2;
             margin-bottom: 20px;
+            letter-spacing: -0.02em;
         }
         .blog-meta {
-            color: #666;
-            font-size: 1rem;
-            margin-bottom: 30px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            font-family: var(--font-mono);
+        }
+        .blog-meta strong {
+            color: var(--primary-light);
+        }
+        .blog-content {
+            background: var(--surface-card);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-xl);
+            padding: 44px;
+            box-shadow: var(--shadow-sm);
+        }
+        @media (max-width: 640px) {
+            .blog-content {
+                padding: 24px 20px;
+            }
         }
         .blog-content h2 {
-            color: #dd0000;
+            font-family: var(--font-heading);
+            color: var(--text-primary);
             font-size: 1.8rem;
-            margin: 40px 0 20px;
+            font-weight: 700;
+            margin: 44px 0 20px;
+            letter-spacing: -0.01em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .blog-content h3 {
-            color: #333;
-            font-size: 1.4rem;
-            margin: 30px 0 15px;
+            font-family: var(--font-heading);
+            color: var(--primary-light);
+            font-size: 1.35rem;
+            font-weight: 600;
+            margin: 32px 0 16px;
         }
         .blog-content p {
             margin-bottom: 20px;
-            color: #555;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
         }
         .blog-content ul, .blog-content ol {
             margin: 20px 0;
-            padding-left: 30px;
+            padding-left: 28px;
+            color: var(--text-secondary);
         }
         .blog-content li {
             margin-bottom: 10px;
-            color: #555;
+            font-size: 1.02rem;
+        }
+        .blog-content li strong {
+            color: var(--text-primary);
         }
         .highlight-box {
-            background: #f8f9fa;
-            border-left: 4px solid #dd0000;
-            padding: 20px;
-            margin: 30px 0;
+            background: rgba(99, 102, 241, 0.08);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            padding: 22px 24px;
+            margin: 32px 0;
+            color: var(--text-primary);
+            font-size: 1.02rem;
+        }
+        .blog-table-wrapper {
+            overflow-x: auto;
+            margin: 28px 0;
+        }
+        .salary-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        .salary-table th {
+            background: rgba(99, 102, 241, 0.12);
+            color: var(--text-primary);
+            padding: 14px 18px;
+            text-align: left;
+            border: 1px solid var(--border-subtle);
+            font-family: var(--font-mono);
+            font-weight: 600;
+        }
+        .salary-table td {
+            padding: 14px 18px;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+        .salary-table tr:hover td {
+            background: rgba(255, 255, 255, 0.02);
         }
         .back-to-home {
-            display: inline-block;
-            margin: 40px 0;
-            color: #dd0000;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin: 36px 0;
+            color: var(--primary-light);
             text-decoration: none;
-            font-weight: 500;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            padding: 10px 20px;
+            background: var(--surface-card);
+            border: 1px solid var(--border-card);
+            border-radius: var(--radius-full);
+            transition: all var(--transition-fast);
         }
         .back-to-home:hover {
-            text-decoration: underline;
+            transform: translateX(-4px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-glow);
         }
     </style>
 </head>
@@ -83,7 +159,9 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <h2><a href="../index.html" style="color: white; text-decoration: none;">Paritosh Lamsal</a></h2>
+                <a href="../index.html">
+                    <h2>Paritosh Lamsal</h2>
+                </a>
             </div>
             <div class="nav-menu">
                 <a href="../index.html#home" class="nav-link">Home</a>
@@ -91,10 +169,20 @@
                 <a href="../index.html#projects" class="nav-link">Projects</a>
                 <a href="../index.html#contact" class="nav-link">Contact</a>
             </div>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark/light mode">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
         </div>
     </nav>
 
     <div class="blog-container">
+        <a href="../index.html" class="back-to-home">
+            <i class="fas fa-arrow-left"></i> Back to Portfolio
+        </a>
+
         <div class="blog-header">
             <h1 class="blog-title">Complete Web Development Career Guide for Nepal 2025</h1>
             <div class="blog-meta">
@@ -138,7 +226,7 @@
                 <li><strong>Authentication:</strong> JWT, OAuth</li>
             </ul>
 
-            <h3>4. Full Stack & Beyond (Months 10-12)</h3>
+            <h3>4. Full Stack &amp; Beyond (Months 10-12)</h3>
             <ul>
                 <li><strong>MERN Stack:</strong> MongoDB, Express, React, Node.js</li>
                 <li><strong>Cloud Services:</strong> AWS, Netlify, Vercel</li>
@@ -217,33 +305,39 @@
             <h3>Challenge 2: Language Barrier</h3>
             <p><strong>Solution:</strong> Most programming resources are in English, but don't let this discourage you. Start with Nepali resources (like my YouTube channel!) and gradually build English proficiency.</p>
 
-            <h3>Challenge 3: Lack of Mentorship</h3>
+            <h3>Challenge 2: Lack of Mentorship</h3>
             <p><strong>Solution:</strong> Join online communities, find virtual mentors, and don't hesitate to reach out to senior developers for guidance.</p>
 
             <h2>💰 Salary Expectations (2025)</h2>
 
-            <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
-                <tr style="background: #f8f9fa;">
-                    <th style="padding: 12px; border: 1px solid #ddd;">Experience Level</th>
-                    <th style="padding: 12px; border: 1px solid #ddd;">Nepal Companies</th>
-                    <th style="padding: 12px; border: 1px solid #ddd;">International Remote</th>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border: 1px solid #ddd;">Junior (0-2 years)</td>
-                    <td style="padding: 12px; border: 1px solid #ddd;">NPR 25,000 - 60,000</td>
-                    <td style="padding: 12px; border: 1px solid #ddd;">$500 - $1,500</td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border: 1px solid #ddd;">Mid-level (2-5 years)</td>
-                    <td style="padding: 12px; border: 1px solid #ddd;">NPR 60,000 - 120,000</td>
-                    <td style="padding: 12px; border: 1px solid #ddd;">$1,500 - $3,500</td>
-                </tr>
-                <tr>
-                    <td style="padding: 12px; border: 1px solid #ddd;">Senior (5+ years)</td>
-                    <td style="padding: 12px; border: 1px solid #ddd;">NPR 120,000 - 250,000+</td>
-                    <td style="padding: 12px; border: 1px solid #ddd;">$3,500 - $8,000+</td>
-                </tr>
-            </table>
+            <div class="blog-table-wrapper">
+                <table class="salary-table">
+                    <thead>
+                        <tr>
+                            <th>Experience Level</th>
+                            <th>Nepal Companies</th>
+                            <th>International Remote</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Junior (0-2 years)</td>
+                            <td>NPR 25,000 - 60,000</td>
+                            <td>$500 - $1,500</td>
+                        </tr>
+                        <tr>
+                            <td>Mid-level (2-5 years)</td>
+                            <td>NPR 60,000 - 120,000</td>
+                            <td>$1,500 - $3,500</td>
+                        </tr>
+                        <tr>
+                            <td>Senior (5+ years)</td>
+                            <td>NPR 120,000 - 250,000+</td>
+                            <td>$3,500 - $8,000+</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
             <h2>🎯 Next Steps</h2>
             <p>Ready to start your web development journey? Here's your action plan:</p>
@@ -285,15 +379,15 @@
                     <p>&copy; 2026 Paritosh Lamsal. All rights reserved.</p>
                 </div>
                 <div class="social-links">
-                    <a href="https://github.com/paritoshlamsal25" target="_blank"><i class="fab fa-github"></i></a>
-                    <a href="https://www.youtube.com/@pardabhitra" target="_blank"><i class="fab fa-youtube"></i></a>
-                    <a href="https://www.linkedin.com/in/paritosh-lamsal-62794528b/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/paritoshlamsal25" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
+                    <a href="https://www.youtube.com/@pardabhitra" target="_blank" rel="noopener noreferrer"><i class="fab fa-youtube"></i></a>
+                    <a href="https://www.linkedin.com/in/paritosh-lamsal-62794528b/" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin-in"></i></a>
                     <a href="mailto:paritoshlamsal25@gmail.com"><i class="fas fa-envelope"></i></a>
                 </div>
             </div>
         </div>
     </footer>
 
-    <script src="../script.js"></script>
+    <script src="../theme-toggle.js"></script>
 </body>
 </html>

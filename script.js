@@ -1,729 +1,383 @@
-// DOM Elements
-const hamburger = document.getElementById('hamburger');
-const navMenu = document.getElementById('nav-menu');
-const navOverlay = document.getElementById('nav-overlay');
-const navLinks = document.querySelectorAll('.nav-link');
-const contactForm = document.getElementById('contactForm');
-const backToTopBtn = document.getElementById('backToTop');
-const successModal = document.getElementById('successModal');
+// ==========================================================================
+// PARITOSH LAMSAL - MODERN PORTFOLIO INTERACTION ENGINE
+// Clean, performant, mobile-optimized event handling and animations.
+// ==========================================================================
 
-// Simple scroll effect - only for back to top button
-window.addEventListener('scroll', () => {
-    // Back to Top Button functionality only
-    if (window.pageYOffset > 300) {
-        backToTopBtn.classList.add('show');
-    } else {
-        backToTopBtn.classList.remove('show');
-    }
-});
+document.addEventListener('DOMContentLoaded', () => {
+    // DOM Elements
+    const navbar = document.querySelector('.navbar');
+    const hamburger = document.getElementById('hamburger');
+    const navMenu = document.getElementById('nav-menu');
+    const navOverlay = document.getElementById('nav-overlay');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const contactForm = document.getElementById('contactForm');
+    const backToTopBtn = document.getElementById('backToTop');
+    const successModal = document.getElementById('successModal');
+    const scrollIndicator = document.querySelector('.scroll-indicator');
 
-backToTopBtn.addEventListener('click', () => {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-});
-
-// Mobile Navigation Toggle
-hamburger.addEventListener('click', () => {
-    const isActive = navMenu.classList.contains('active');
-    
-    if (isActive) {
-        closeMenu();
-    } else {
-        openMenu();
-    }
-});
-
-// Open mobile menu
-function openMenu() {
-    navMenu.classList.add('active');
-    hamburger.classList.add('active');
-    if (navOverlay) navOverlay.classList.add('active');
-    document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
-}
-
-// Close mobile menu
-function closeMenu() {
-    navMenu.classList.remove('active');
-    hamburger.classList.remove('active');
-    if (navOverlay) navOverlay.classList.remove('active');
-    document.body.style.overflow = ''; // Restore scrolling
-}
-
-// Close mobile menu when clicking on nav links
-navLinks.forEach(link => {
-    link.addEventListener('click', () => {
-        closeMenu();
-    });
-});
-
-// Close mobile menu when clicking on overlay
-if (navOverlay) {
-    navOverlay.addEventListener('click', () => {
-        closeMenu();
-    });
-}
-
-// Close mobile menu when clicking outside
-document.addEventListener('click', (e) => {
-    if (!hamburger.contains(e.target) && !navMenu.contains(e.target)) {
-        closeMenu();
-    }
-});
-
-// Close menu on escape key
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        closeMenu();
-    }
-});
-
-// Touch support for mobile
-if ('ontouchstart' in window) {
-    document.body.classList.add('touch-device');
-}
-
-// Smooth scrolling for navigation links
-navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
+    // --------------------------------------------------------------------------
+    // 1. Navbar Glassmorphic Scroll Effect & Back-to-Top
+    // --------------------------------------------------------------------------
+    const handleScroll = () => {
+        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
         
-        if (targetSection) {
-            const offsetTop = targetSection.offsetTop - 70; // Account for fixed navbar
+        // Sticky Navbar Glass Effect
+        if (navbar) {
+            if (scrollY > 30) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        }
+
+        // Back to Top Button
+        if (backToTopBtn) {
+            if (scrollY > 350) {
+                backToTopBtn.classList.add('show');
+            } else {
+                backToTopBtn.classList.remove('show');
+            }
+        }
+
+        // Active Navigation Highlight
+        updateActiveNavLink(scrollY);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Initial check
+
+    if (backToTopBtn) {
+        backToTopBtn.addEventListener('click', () => {
             window.scrollTo({
-                top: offsetTop,
+                top: 0,
                 behavior: 'smooth'
             });
-        }
-    });
-});
+        });
+    }
 
-// Navbar background on scroll - maintain black theme
-window.addEventListener('scroll', () => {
-    const navbar = document.querySelector('.navbar');
-    if (window.scrollY > 50) {
-        navbar.style.background = 'linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2d2d2d 50%, #1a1a1a 75%, #000000 100%)';
-        navbar.style.boxShadow = '0 4px 25px rgba(0, 0, 0, 0.4)';
-        navbar.style.backdropFilter = 'blur(20px)';
-    } else {
-        navbar.style.background = 'linear-gradient(135deg, #000000 0%, #1a1a1a 25%, #2d2d2d 50%, #1a1a1a 75%, #000000 100%)';
-        navbar.style.boxShadow = '0 4px 25px rgba(0, 0, 0, 0.3)';
-        navbar.style.backdropFilter = 'blur(20px)';
-    }
-});
-
-// Active navigation link highlighting
-window.addEventListener('scroll', () => {
-    const sections = document.querySelectorAll('section');
-    const scrollPos = window.scrollY + 100;
-
-    sections.forEach(section => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        const sectionId = section.getAttribute('id');
-        
-        if (scrollPos >= sectionTop && scrollPos <= sectionTop + sectionHeight) {
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${sectionId}`) {
-                    link.classList.add('active');
-                }
-            });
-        }
-    });
-});
-
-// Contact form handling
-contactForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    // Get form inputs
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const subjectInput = document.getElementById('subject');
-    const messageInput = document.getElementById('message');
-    
-    // Get form data
-    const formData = new FormData(contactForm);
-    const name = formData.get('name');
-    const email = formData.get('_replyto');
-    const subject = formData.get('subject');
-    const message = formData.get('message');
-    
-    // Clear previous validations
-    [nameInput, emailInput, subjectInput, messageInput].forEach(clearValidation);
-    
-    let isValid = true;
-    
-    // Validate all fields
-    if (!name || !validateName(name)) {
-        showError(nameInput, !name ? 'Name is required' : 'Please enter a valid name (letters only, no numbers)');
-        isValid = false;
-    } else {
-        showSuccess(nameInput);
-    }
-    
-    if (!email || !validateEmail(email)) {
-        showError(emailInput, !email ? 'Email is required' : 'Please enter a valid email address');
-        isValid = false;
-    } else {
-        showSuccess(emailInput);
-    }
-    
-    if (!subject || !validateSubject(subject)) {
-        showError(subjectInput, !subject ? 'Subject is required' : 'Subject must be at least 3 characters long');
-        isValid = false;
-    } else {
-        showSuccess(subjectInput);
-    }
-    
-    if (!message || !validateMessage(message)) {
-        showError(messageInput, !message ? 'Message is required' : 'Message must be at least 10 characters long');
-        isValid = false;
-    } else {
-        showSuccess(messageInput);
-    }
-    
-    if (!isValid) {
-        // Focus on first error field
-        const firstError = contactForm.querySelector('.error');
-        if (firstError) {
-            firstError.focus();
-        }
-        return;
-    }
-    
-    // Show loading state
-    const submitBtn = contactForm.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Sending...';
-    submitBtn.disabled = true;
-    
-    try {
-        // Submit to Formspree
-        const response = await fetch(contactForm.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json'
+    if (scrollIndicator) {
+        scrollIndicator.addEventListener('click', () => {
+            const aboutSection = document.getElementById('about');
+            if (aboutSection) {
+                aboutSection.scrollIntoView({ behavior: 'smooth' });
             }
         });
-        
-        if (response.ok) {
-            showSuccessModal();
-            contactForm.reset();
-            // Clear all validations after reset
+    }
+
+    // --------------------------------------------------------------------------
+    // 2. Active Link Highlighting
+    // --------------------------------------------------------------------------
+    function updateActiveNavLink(scrollY) {
+        const sections = document.querySelectorAll('section[id]');
+        const scrollPos = scrollY + 140;
+
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute('id');
+
+            if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${sectionId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }
+
+    // --------------------------------------------------------------------------
+    // 3. Smooth Navigation & Mobile Menu Toggle
+    // --------------------------------------------------------------------------
+    function openMenu() {
+        if (!navMenu) return;
+        navMenu.classList.add('active');
+        if (hamburger) hamburger.classList.add('active');
+        if (navOverlay) navOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+        if (!navMenu) return;
+        navMenu.classList.remove('active');
+        if (hamburger) hamburger.classList.remove('active');
+        if (navOverlay) navOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    if (hamburger) {
+        hamburger.addEventListener('click', () => {
+            const isActive = navMenu.classList.contains('active');
+            if (isActive) closeMenu();
+            else openMenu();
+        });
+    }
+
+    if (navOverlay) {
+        navOverlay.addEventListener('click', closeMenu);
+    }
+
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            const href = link.getAttribute('href');
+            if (href && href.startsWith('#')) {
+                e.preventDefault();
+                closeMenu();
+                const target = document.querySelector(href);
+                if (target) {
+                    const headerOffset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            } else {
+                closeMenu();
+            }
+        });
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
+    });
+
+    // --------------------------------------------------------------------------
+    // 4. Animated Stats Counter (Bento Stats)
+    // --------------------------------------------------------------------------
+    function animateCounter(element, target, duration = 1800, suffix = '') {
+        let start = 0;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Ease-out cubic
+            const easeOut = 1 - Math.pow(1 - progress, 3);
+            const currentVal = Math.floor(easeOut * target);
+
+            element.textContent = currentVal + suffix;
+
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else {
+                element.textContent = target + suffix;
+            }
+        }
+
+        requestAnimationFrame(update);
+    }
+
+    const statsObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const statCards = entry.target.querySelectorAll('.stat-item h3');
+                statCards.forEach(item => {
+                    const rawText = item.textContent.trim();
+                    if (rawText.includes('8th')) {
+                        item.textContent = '0th';
+                        animateCounter(item, 8, 1600, 'th');
+                    } else if (rawText.includes('10+')) {
+                        item.textContent = '0+';
+                        animateCounter(item, 10, 1600, '+');
+                    }
+                });
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.4 });
+
+    const statsSection = document.querySelector('.about-stats');
+    if (statsSection) {
+        statsObserver.observe(statsSection);
+    }
+
+    // --------------------------------------------------------------------------
+    // 5. Contact Form Validation & Formspree AJAX Submission
+    // --------------------------------------------------------------------------
+    if (contactForm) {
+        setupRealTimeValidation();
+
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const subjectInput = document.getElementById('subject');
+            const messageInput = document.getElementById('message');
+
             [nameInput, emailInput, subjectInput, messageInput].forEach(clearValidation);
-        } else {
-            throw new Error('Form submission failed');
-        }
-    } catch (error) {
-        showNotification('Sorry, there was an error sending your message. Please try again or contact me directly via email.', 'error');
-    } finally {
-        // Reset button
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-    }
-});
 
-// Form validation functions
-function validateEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
+            let isValid = true;
+            const name = nameInput ? nameInput.value.trim() : '';
+            const email = emailInput ? emailInput.value.trim() : '';
+            const subject = subjectInput ? subjectInput.value.trim() : '';
+            const message = messageInput ? messageInput.value.trim() : '';
 
-function validateName(name) {
-    const trimmedName = name.trim();
-    
-    // Name should be at least 2 characters long
-    if (trimmedName.length < 2) {
-        return false;
-    }
-    
-    // Name should only contain letters, spaces, hyphens, and apostrophes
-    // This regex allows: letters (a-z, A-Z), spaces, hyphens (-), apostrophes ('), and accented characters
-    const nameRegex = /^[a-zA-ZÀ-ÿ\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF\s'-]+$/;
-    
-    if (!nameRegex.test(trimmedName)) {
-        return false;
-    }
-    
-    // Name shouldn't be just spaces, hyphens, or apostrophes
-    const hasLetters = /[a-zA-ZÀ-ÿ\u0100-\u017F\u0180-\u024F\u1E00-\u1EFF]/.test(trimmedName);
-    
-    return hasLetters;
-}
-
-function validateSubject(subject) {
-    return subject.trim().length >= 3;
-}
-
-function validateMessage(message) {
-    return message.trim().length >= 10;
-}
-
-function showError(input, message) {
-    input.classList.add('error');
-    input.classList.remove('success');
-    
-    let errorElement = input.parentNode.querySelector('.error-message');
-    if (!errorElement) {
-        errorElement = document.createElement('div');
-        errorElement.className = 'error-message';
-        input.parentNode.appendChild(errorElement);
-    }
-    
-    errorElement.textContent = message;
-    errorElement.classList.add('show');
-}
-
-function showSuccess(input) {
-    input.classList.add('success');
-    input.classList.remove('error');
-    
-    const errorElement = input.parentNode.querySelector('.error-message');
-    if (errorElement) {
-        errorElement.classList.remove('show');
-    }
-}
-
-function clearValidation(input) {
-    input.classList.remove('error', 'success');
-    const errorElement = input.parentNode.querySelector('.error-message');
-    if (errorElement) {
-        errorElement.classList.remove('show');
-    }
-}
-
-// Real-time validation setup
-function setupRealTimeValidation() {
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const subjectInput = document.getElementById('subject');
-    const messageInput = document.getElementById('message');
-
-    if (nameInput) {
-        nameInput.addEventListener('blur', () => {
-            if (nameInput.value.trim()) {
-                if (validateName(nameInput.value)) {
-                    showSuccess(nameInput);
-                } else {
-                    showError(nameInput, 'Please enter a valid name (letters only, no numbers)');
-                }
-            }
-        });
-        
-        nameInput.addEventListener('input', () => {
-            if (nameInput.classList.contains('error') && validateName(nameInput.value)) {
+            if (!name || name.length < 2) {
+                showError(nameInput, 'Please enter a valid name (at least 2 letters)');
+                isValid = false;
+            } else {
                 showSuccess(nameInput);
             }
-        });
-    }
 
-    if (emailInput) {
-        emailInput.addEventListener('blur', () => {
-            if (emailInput.value.trim()) {
-                if (validateEmail(emailInput.value)) {
-                    showSuccess(emailInput);
-                } else {
-                    showError(emailInput, 'Please enter a valid email address');
-                }
-            }
-        });
-        
-        emailInput.addEventListener('input', () => {
-            if (emailInput.classList.contains('error') && validateEmail(emailInput.value)) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!email || !emailRegex.test(email)) {
+                showError(emailInput, 'Please enter a valid email address');
+                isValid = false;
+            } else {
                 showSuccess(emailInput);
             }
-        });
-    }
 
-    if (subjectInput) {
-        subjectInput.addEventListener('blur', () => {
-            if (subjectInput.value.trim()) {
-                if (validateSubject(subjectInput.value)) {
-                    showSuccess(subjectInput);
-                } else {
-                    showError(subjectInput, 'Subject must be at least 3 characters long');
-                }
-            }
-        });
-        
-        subjectInput.addEventListener('input', () => {
-            if (subjectInput.classList.contains('error') && validateSubject(subjectInput.value)) {
+            if (!subject || subject.length < 3) {
+                showError(subjectInput, 'Subject must be at least 3 characters');
+                isValid = false;
+            } else {
                 showSuccess(subjectInput);
             }
-        });
-    }
 
-    if (messageInput) {
-        messageInput.addEventListener('blur', () => {
-            if (messageInput.value.trim()) {
-                if (validateMessage(messageInput.value)) {
-                    showSuccess(messageInput);
-                } else {
-                    showError(messageInput, 'Message must be at least 10 characters long');
-                }
-            }
-        });
-        
-        messageInput.addEventListener('input', () => {
-            if (messageInput.classList.contains('error') && validateMessage(messageInput.value)) {
+            if (!message || message.length < 10) {
+                showError(messageInput, 'Message must be at least 10 characters long');
+                isValid = false;
+            } else {
                 showSuccess(messageInput);
             }
+
+            if (!isValid) return;
+
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalBtnHTML = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+
+            try {
+                const formData = new FormData(contactForm);
+                const response = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: { 'Accept': 'application/json' }
+                });
+
+                if (response.ok) {
+                    showSuccessModal();
+                    contactForm.reset();
+                    [nameInput, emailInput, subjectInput, messageInput].forEach(clearValidation);
+                } else {
+                    throw new Error('Form submission failed');
+                }
+            } catch (err) {
+                showToastNotification('Could not send message. Please email me directly at paritoshlamsal25@gmail.com', 'error');
+            } finally {
+                submitBtn.innerHTML = originalBtnHTML;
+                submitBtn.disabled = false;
+            }
         });
     }
-}
 
-// Email validation function
-function isValidEmail(email) {
-    return validateEmail(email);
-}
+    function setupRealTimeValidation() {
+        const inputs = [
+            { id: 'name', validator: val => val.trim().length >= 2, msg: 'Name must have at least 2 characters' },
+            { id: 'email', validator: val => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim()), msg: 'Enter a valid email' },
+            { id: 'subject', validator: val => val.trim().length >= 3, msg: 'Subject must be at least 3 characters' },
+            { id: 'message', validator: val => val.trim().length >= 10, msg: 'Message must be at least 10 characters' }
+        ];
 
-// Success Modal Function
-function showSuccessModal() {
-    // Reset animations by removing and re-adding the modal
-    successModal.classList.remove('show');
-    
-    // Force reflow to ensure the class removal takes effect
-    successModal.offsetHeight;
-    
-    // Reset all checkmark animations
-    const checkmarkElements = successModal.querySelectorAll('.checkmark-circle, .checkmark-stem, .checkmark-kick');
-    checkmarkElements.forEach(element => {
-        element.style.animation = 'none';
-        element.offsetHeight; // Trigger reflow
-        element.style.animation = null;
-    });
-    
-    // Show the modal
-    setTimeout(() => {
-        successModal.classList.add('show');
-    }, 50);
-    
-    // Auto-hide after 4 seconds (increased to see full animation)
-    setTimeout(() => {
-        hideSuccessModal();
-    }, 4000);
-}
-
-function hideSuccessModal() {
-    successModal.classList.remove('show');
-}
-
-// Click outside modal to close
-successModal.addEventListener('click', (e) => {
-    if (e.target === successModal) {
-        hideSuccessModal();
-    }
-});
-
-// Close modal with Escape key
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && successModal.classList.contains('show')) {
-        hideSuccessModal();
-    }
-});
-
-// Notification system
-function showNotification(message, type) {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification ${type}`;
-    notification.innerHTML = `
-        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
-        <span>${message}</span>
-    `;
-    
-    // Add notification styles if they don't exist
-    if (!document.querySelector('#notification-styles')) {
-        const styles = document.createElement('style');
-        styles.id = 'notification-styles';
-        styles.textContent = `
-            .notification {
-                position: fixed;
-                top: 100px;
-                right: 20px;
-                padding: 15px 20px;
-                border-radius: 10px;
-                color: white;
-                font-weight: 500;
-                z-index: 9999;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                min-width: 300px;
-                transform: translateX(100%);
-                transition: transform 0.3s ease;
-            }
-            
-            .notification.success {
-                background: #10b981;
-            }
-            
-            .notification.error {
-                background: #ef4444;
-            }
-            
-            .notification.show {
-                transform: translateX(0);
-            }
-        `;
-        document.head.appendChild(styles);
-    }
-    
-    // Add to DOM
-    document.body.appendChild(notification);
-    
-    // Show notification
-    setTimeout(() => {
-        notification.classList.add('show');
-    }, 100);
-    
-    // Remove notification after 5 seconds
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => {
-            document.body.removeChild(notification);
-        }, 300);
-    }, 5000);
-}
-
-// Scroll animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe elements for scroll animations
-window.addEventListener('load', () => {
-    const animateElements = document.querySelectorAll('.skill-category, .project-card, .timeline-item');
-    
-    animateElements.forEach(el => {
-        el.style.opacity = '0';
-        el.style.transform = 'translateY(30px)';
-        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(el);
-    });
-});
-
-// Smooth scroll for scroll indicator
-document.querySelector('.scroll-indicator')?.addEventListener('click', () => {
-    document.querySelector('#about').scrollIntoView({
-        behavior: 'smooth'
-    });
-});
-
-// Remove parallax effect that causes upward movement
-// window.addEventListener('scroll', () => {
-//     const scrolled = window.pageYOffset;
-//     const hero = document.querySelector('.hero');
-//     if (hero) {
-//         hero.style.transform = `translateY(${scrolled * 0.5}px)`;
-//     }
-// });
-
-// Typewriter effect for hero title
-function typeWriter(element, text, speed = 100) {
-    let i = 0;
-    element.innerHTML = '';
-    
-    function type() {
-        if (i < text.length) {
-            element.innerHTML += text.charAt(i);
-            i++;
-            setTimeout(type, speed);
-        }
-    }
-    
-    type();
-}
-
-// Special typewriter for HTML content
-function typeWriterHTML(element, htmlContent, speed = 100) {
-    // Parse the HTML to separate text from tags
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = htmlContent;
-    
-    // Extract text content and remember positions of tags
-    let textContent = '';
-    const tagPositions = [];
-    
-    function parseNode(node, currentPos = 0) {
-        if (node.nodeType === Node.TEXT_NODE) {
-            textContent += node.textContent;
-            return currentPos + node.textContent.length;
-        } else if (node.nodeType === Node.ELEMENT_NODE) {
-            const startTag = `<${node.tagName.toLowerCase()}${node.className ? ` class="${node.className}"` : ''}>`;
-            const endTag = `</${node.tagName.toLowerCase()}>`;
-            
-            tagPositions.push({ pos: currentPos, tag: startTag, type: 'open' });
-            
-            let newPos = currentPos;
-            for (let child of node.childNodes) {
-                newPos = parseNode(child, newPos);
-            }
-            
-            tagPositions.push({ pos: newPos, tag: endTag, type: 'close' });
-            return newPos;
-        }
-        return currentPos;
-    }
-    
-    parseNode(tempDiv);
-    
-    // Now type character by character, inserting tags at the right positions
-    let i = 0;
-    element.innerHTML = '';
-    
-    function type() {
-        if (i < textContent.length) {
-            // Check if we need to insert any tags at this position
-            const tagsAtPosition = tagPositions.filter(tag => tag.pos === i);
-            tagsAtPosition.forEach(tag => {
-                element.innerHTML += tag.tag;
-            });
-            
-            element.innerHTML += textContent.charAt(i);
-            i++;
-            setTimeout(type, speed);
-        } else {
-            // Insert any remaining closing tags
-            const remainingTags = tagPositions.filter(tag => tag.pos >= i);
-            remainingTags.forEach(tag => {
-                element.innerHTML += tag.tag;
-            });
-        }
-    }
-    
-    type();
-}
-
-// Initialize typing effect when page loads
-window.addEventListener('load', () => {
-    const heroTitle = document.querySelector('.hero-text h1');
-    if (heroTitle) {
-        // Store the original HTML content
-        const originalHTML = heroTitle.innerHTML;
-        // Clear the content first
-        heroTitle.innerHTML = '';
-        
-        // Start typing effect after a delay
-        setTimeout(() => {
-            typeWriterHTML(heroTitle, originalHTML, 80);
-        }, 1000);
-    }
-});
-
-// Skill items hover effect enhancement
-document.querySelectorAll('.skill-item').forEach(item => {
-    item.addEventListener('mouseenter', () => {
-        item.style.transform = 'scale(1.05) rotate(2deg)';
-    });
-    
-    item.addEventListener('mouseleave', () => {
-        item.style.transform = 'scale(1) rotate(0deg)';
-    });
-});
-
-// Project cards tilt effect
-document.querySelectorAll('.project-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        
-        const rotateX = (y - centerY) / 10;
-        const rotateY = (centerX - x) / 10;
-        
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-    });
-    
-    card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
-    });
-});
-
-// Counter animation for stats
-function animateCounter(element, target, duration = 2000, finalText = String(target)) {
-    let start = 0;
-    const increment = target / (duration / 16);
-    
-    function updateCounter() {
-        start += increment;
-        if (start < target) {
-            element.textContent = Math.ceil(start);
-            requestAnimationFrame(updateCounter);
-        } else {
-            element.textContent = finalText;
-        }
-    }
-    
-    updateCounter();
-}
-
-// Initialize counter animations when stats section is visible
-const statsObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            const statItems = entry.target.querySelectorAll('.stat-item h3');
-            statItems.forEach(item => {
-                const text = item.textContent.trim();
-                const digits = text.replace(/\D/g, '');
-                const number = digits ? parseInt(digits, 10) : NaN;
-                if (!Number.isNaN(number) && number > 0) {
-                    item.textContent = '0';
-                    setTimeout(() => {
-                        animateCounter(item, number, 2000, text);
-                    }, 500);
+        inputs.forEach(item => {
+            const el = document.getElementById(item.id);
+            if (!el) return;
+            el.addEventListener('blur', () => {
+                if (el.value.trim().length > 0) {
+                    if (item.validator(el.value)) showSuccess(el);
+                    else showError(el, item.msg);
                 }
             });
-            statsObserver.unobserve(entry.target);
+            el.addEventListener('input', () => {
+                if (el.classList.contains('error') && item.validator(el.value)) {
+                    showSuccess(el);
+                }
+            });
+        });
+    }
+
+    function showError(input, message) {
+        if (!input) return;
+        input.classList.add('error');
+        input.classList.remove('success');
+        let err = input.parentNode.querySelector('.error-message');
+        if (!err) {
+            err = document.createElement('div');
+            err.className = 'error-message';
+            input.parentNode.appendChild(err);
         }
-    });
-}, { threshold: 0.5 });
-
-const statsSection = document.querySelector('.about-stats');
-if (statsSection) {
-    statsObserver.observe(statsSection);
-}
-
-// Easter egg - Konami code
-let konamiCode = [];
-const konamiSequence = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65]; // Up Up Down Down Left Right Left Right B A
-
-document.addEventListener('keydown', (e) => {
-    konamiCode.push(e.keyCode);
-    if (konamiCode.length > konamiSequence.length) {
-        konamiCode.shift();
+        err.textContent = message;
     }
-    
-    if (konamiCode.join(',') === konamiSequence.join(',')) {
-        showNotification('🎉 Easter egg found! Welcome to the secret dev mode!', 'success');
-        document.body.style.filter = 'hue-rotate(180deg)';
+
+    function showSuccess(input) {
+        if (!input) return;
+        input.classList.add('success');
+        input.classList.remove('error');
+        const err = input.parentNode.querySelector('.error-message');
+        if (err) err.remove();
+    }
+
+    function clearValidation(input) {
+        if (!input) return;
+        input.classList.remove('error', 'success');
+        const err = input.parentNode.querySelector('.error-message');
+        if (err) err.remove();
+    }
+
+    function showSuccessModal() {
+        if (!successModal) return;
+        successModal.classList.add('show');
         setTimeout(() => {
-            document.body.style.filter = 'none';
-        }, 3000);
-        konamiCode = [];
+            successModal.classList.remove('show');
+        }, 4500);
     }
-});
 
-// Initialize real-time form validation
-document.addEventListener('DOMContentLoaded', () => {
-    setupRealTimeValidation();
+    if (successModal) {
+        successModal.addEventListener('click', (e) => {
+            if (e.target === successModal) {
+                successModal.classList.remove('show');
+            }
+        });
+    }
+
+    function showToastNotification(message, type = 'info') {
+        const notif = document.createElement('div');
+        notif.className = `notification ${type} show`;
+        notif.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> <span>${message}</span>`;
+        document.body.appendChild(notif);
+        setTimeout(() => {
+            notif.classList.remove('show');
+            setTimeout(() => notif.remove(), 400);
+        }, 4500);
+    }
+
+    // --------------------------------------------------------------------------
+    // 6. Interactive 3D Tilt for Project Cards (Desktop only)
+    // --------------------------------------------------------------------------
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        const cards = document.querySelectorAll('.project-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * -5;
+                const rotateY = ((x - centerX) / centerX) * 5;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-6px)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = '';
+            });
+        });
+    }
 });
